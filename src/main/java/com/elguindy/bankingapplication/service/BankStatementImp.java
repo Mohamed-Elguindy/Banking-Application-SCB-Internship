@@ -3,6 +3,7 @@ package com.elguindy.bankingapplication.service;
 import com.elguindy.bankingapplication.dto.EmailDetails;
 import com.elguindy.bankingapplication.entity.Transaction;
 import com.elguindy.bankingapplication.entity.User;
+import com.elguindy.bankingapplication.exception.AccountDoesntExistsException;
 import com.elguindy.bankingapplication.repository.TransactionRepository;
 import com.elguindy.bankingapplication.repository.UserRepository;
 import com.itextpdf.text.*;
@@ -38,7 +39,7 @@ public class BankStatementImp implements BankStatement {
         try {
             User currentUser = userRepository.findByAccountNumber(accountNumber);
             if (currentUser == null) {
-                throw new IllegalArgumentException("Account not found: " + accountNumber);
+                throw new AccountDoesntExistsException();
             }
 
             String customerName = currentUser.getFirstName() + " " + currentUser.getLastName();
