@@ -2,6 +2,9 @@ package com.elguindy.bankingapplication.service;
 
 import com.elguindy.bankingapplication.dto.*;
 import com.elguindy.bankingapplication.entity.User;
+import com.elguindy.bankingapplication.exception.AccountAlreadyExistsException;
+import com.elguindy.bankingapplication.exception.AccountDoesntExistsException;
+import com.elguindy.bankingapplication.exception.InsufficientFundsException;
 import com.elguindy.bankingapplication.repository.UserRepository;
 import com.elguindy.bankingapplication.util.AccountUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +57,12 @@ public class UserServiceImpl implements UserService {
 
         }
         else{
-            BankResponse bankResponse = BankResponse.builder()
+            throw new AccountAlreadyExistsException();
+            /*BankResponse bankResponse = BankResponse.builder()
                     .ResponseMessage(AccountUtil.Account_Exists_Message).accountInfo(null)
                     .ResponseCode(AccountUtil.Account_Exists_Code).build();
-            return bankResponse;
+            return bankResponse;*/
+
         }
 
     }
@@ -75,10 +80,11 @@ public class UserServiceImpl implements UserService {
                             .accountNumber(foundUser.getAccountNumber()).build()).build();
         }
         else{
-            return BankResponse.builder()
+            throw new AccountDoesntExistsException();
+           /* return BankResponse.builder()
                     .ResponseCode(AccountUtil.Account_Doesnt_Exists_Code)
                     .ResponseMessage(AccountUtil.Account_Doesnt_Exists_Message)
-                    .accountInfo(null).build();
+                    .accountInfo(null).build();*/
         }
     }
 
@@ -105,10 +111,12 @@ public class UserServiceImpl implements UserService {
                             .accountNumber(foundUser.getAccountNumber()).build()).build();
         }
         else{
-            return BankResponse.builder()
+            throw new AccountDoesntExistsException();
+            /*return BankResponse.builder()
                     .ResponseCode(AccountUtil.Account_Doesnt_Exists_Code)
                     .ResponseMessage(AccountUtil.Account_Doesnt_Exists_Message)
-                    .accountInfo(null).build();
+                    .accountInfo(null).build();*/
+
         }
 
 
@@ -120,13 +128,14 @@ public class UserServiceImpl implements UserService {
         if(userRepository.existsByAccountNumber(withdrawRequest.getAccountNumber())) {
             User foundUser = userRepository.findByAccountNumber(withdrawRequest.getAccountNumber());
             if(withdrawRequest.getAmount().compareTo(foundUser.getAccountBalance()) > 0) {
-                return BankResponse.builder()
+                throw new InsufficientFundsException();
+                /*return BankResponse.builder()
                         .ResponseCode(AccountUtil.Insufficient_Funds_Code)
                         .ResponseMessage(AccountUtil.Insufficient_Funds_Message)
                         .accountInfo(AccountInfo.builder()
                                 .accountBalance(foundUser.getAccountBalance())
                                 .accountName(foundUser.getFirstName()+" " +foundUser.getLastName())
-                                .accountNumber(foundUser.getAccountNumber()).build()).build();
+                                .accountNumber(foundUser.getAccountNumber()).build()).build();*/
 
 
             }
@@ -152,10 +161,12 @@ public class UserServiceImpl implements UserService {
             }
         }
         else{
+            throw new AccountDoesntExistsException();
+            /*
             return BankResponse.builder()
                     .ResponseCode(AccountUtil.Account_Doesnt_Exists_Code)
                     .ResponseMessage(AccountUtil.Account_Doesnt_Exists_Message)
-                    .accountInfo(null).build();
+                    .accountInfo(null).build();*/
         }
 
     }
@@ -167,13 +178,15 @@ public class UserServiceImpl implements UserService {
             User destinationUser = userRepository.findByAccountNumber(transferRequest.getDestinationAccountNumber());
 
             if(transferRequest.getAmount().compareTo(sourceUser.getAccountBalance()) > 0) {
+                throw new InsufficientFundsException();
+                /*
                 return BankResponse.builder()
                         .ResponseCode(AccountUtil.Insufficient_Funds_Code)
                         .ResponseMessage(AccountUtil.Insufficient_Funds_Message)
                         .accountInfo(AccountInfo.builder()
                                 .accountBalance(sourceUser.getAccountBalance())
                                 .accountName(sourceUser.getFirstName()+" " +sourceUser.getLastName())
-                                .accountNumber(sourceUser.getAccountNumber()).build()).build();
+                                .accountNumber(sourceUser.getAccountNumber()).build()).build();*/
             }
             else {
                 sourceUser.setAccountBalance(sourceUser.getAccountBalance().subtract(transferRequest.getAmount()));
@@ -222,10 +235,12 @@ public class UserServiceImpl implements UserService {
             }
         }
         else{
+            throw new AccountDoesntExistsException();
+            /*
             return BankResponse.builder()
                     .ResponseCode(AccountUtil.Account_Doesnt_Exists_Code)
                     .ResponseMessage(AccountUtil.Account_Doesnt_Exists_Message)
-                    .accountInfo(null).build();
+                    .accountInfo(null).build();*/
         }
 
     }
